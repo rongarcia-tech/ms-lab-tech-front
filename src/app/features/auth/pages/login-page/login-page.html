@@ -1,0 +1,47 @@
+<div class="login-wrapper">
+  <mat-card class="login-card">
+    <mat-card-header>
+      <mat-card-title>Iniciar sesión</mat-card-title>
+      <mat-card-subtitle>MS Lab Panel</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Usuario o email</mat-label>
+          <input matInput formControlName="username" placeholder="tu@correo.com">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Contraseña</mat-label>
+          <input
+            matInput
+            formControlName="password"
+            [type]="'password'"
+            placeholder="••••••••"
+          >
+          <button mat-icon-button matSuffix type="button" disabled>
+            <mat-icon>visibility_off</mat-icon>
+          </button>
+        </mat-form-field>
+
+        <div *ngIf="errorMessage" class="error-message">
+          {{ errorMessage }}
+        </div>
+      </form>
+    </mat-card-content>
+
+    <mat-card-actions>
+      <button
+        mat-flat-button
+        color="primary"
+        class="full-width"
+        type="submit"
+        [disabled]="form.invalid || loading"
+        (click)="onSubmit()"
+      >
+        {{ loading ? 'Ingresando...' : 'Entrar' }}
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>

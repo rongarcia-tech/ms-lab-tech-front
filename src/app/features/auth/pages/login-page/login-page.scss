@@ -1,0 +1,33 @@
+.login-wrapper {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+mat-card-header {
+  /* Habilita Flexbox en el encabezado */
+  display: flex; 
+  /* Centra horizontalmente los elementos hijos */
+  justify-content: center; 
+  /* Nota: mat-card-title es el único hijo en tu ejemplo, por lo que lo centrará. */
+  margin-bottom: 20px;
+}
+
+.error-message {
+  color: #d32f2f;
+  margin-top: 8px;
+  font-size: 0.9rem;
+}
+

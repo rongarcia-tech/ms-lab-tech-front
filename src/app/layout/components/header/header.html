@@ -1,0 +1,16 @@
+<mat-toolbar color="primary" class="header-toolbar">
+  <span class="app-title">MS Lab Panel</span>
+
+  <span class="spacer"></span>
+
+  <!-- Menú principal, solo si está logueado -->
+  <ng-container *ngIf="loggedIn$ | async">
+    <button mat-button routerLink="/labs">Labs</button>
+    <button mat-button routerLink="/orders">Orders</button>
+    <button mat-button routerLink="/profile">Perfil</button>
+
+    <button mat-button color="warn" (click)="logout()">
+      Salir
+    </button>
+  </ng-container>
+</mat-toolbar>
