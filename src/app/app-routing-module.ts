@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
+import { HomePage } from './pages/home-page/home-page';
 import { LoginPage } from './features/auth/pages/login-page/login-page';
 import { LabsPage } from './features/labs/pages/labs-page/labs-page';
 import { OrdersPage } from './features/orders/pages/orders-page/orders-page';
@@ -9,6 +10,7 @@ import { MainLayout } from './layout/components/main-layout/main-layout';
 import { AuthGuard } from './core/guards/auth-guard';
 
 const routes: Routes = [
+   { path: '', component: HomePage },
   { path: 'login', component: LoginPage },
 
   {

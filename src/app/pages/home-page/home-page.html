@@ -1,0 +1,73 @@
+<div class="home-page">
+  <h1>Bienvenido a Medical Services</h1>
+  <p class="subtitle">
+    Selecciona una sección, primero te pediremos iniciar sesión.
+  </p>
+
+  <div class="home-grid">
+    <mat-card class="home-card">
+      <mat-card-title>Laboratorios</mat-card-title>
+      <mat-card-content>
+        Gestiona las órdenes y resultados de laboratorio.
+      </mat-card-content>
+      <mat-card-actions>
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="goToLogin('/labs')"
+        >
+          Ir a Labs
+        </button>
+      </mat-card-actions>
+    </mat-card>
+
+    <mat-card class="home-card">
+      <mat-card-title>Órdenes</mat-card-title>
+      <mat-card-content>
+        Revisa y administra las órdenes médicas.
+      </mat-card-content>
+      <mat-card-actions>
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="goToLogin('/orders')"
+        >
+          Ir a Orders
+        </button>
+      </mat-card-actions>
+    </mat-card>
+
+    <mat-card class="home-card">
+      <mat-card-title>Perfil</mat-card-title>
+      <mat-card-content>
+        Gestiona los datos y preferencias de tu cuenta.
+      </mat-card-content>
+      <mat-card-actions>
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="goToLogin('/profile')"
+        >
+          Ir a Perfil
+        </button>
+      </mat-card-actions>
+    </mat-card>
+
+    <mat-card class="home-card login-card">
+      <mat-card-title>Iniciar sesión</mat-card-title>
+      <mat-card-content>
+        Si ya tienes cuenta, puedes acceder directamente al sistema.
+      </mat-card-content>
+      <mat-card-actions>
+        <button
+          mat-stroked-button
+          color="accent"
+          (click)="goToLogin()"
+        >
+          Ir al login
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>
+

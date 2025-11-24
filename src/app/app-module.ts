@@ -11,6 +11,7 @@ import { AuthModule } from './features/auth/auth-module';
 @NgModule({
   declarations: [
     App,
+
   ],
   imports: [
     BrowserModule,
