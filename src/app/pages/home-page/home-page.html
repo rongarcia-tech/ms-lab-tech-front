@@ -1,73 +1,130 @@
-<div class="home-page">
-  <h1>Bienvenido a Medical Services</h1>
-  <p class="subtitle">
-    Selecciona una sección, primero te pediremos iniciar sesión.
-  </p>
+<div class="home-root">
+  <div class="home-overlay"></div>
 
-  <div class="home-grid">
-    <mat-card class="home-card">
-      <mat-card-title>Laboratorios</mat-card-title>
-      <mat-card-content>
-        Gestiona las órdenes y resultados de laboratorio.
-      </mat-card-content>
-      <mat-card-actions>
+  <div class="home-container">
+    <!-- HEADER LOCAL DEL HOME -->
+    <header class="home-header">
+      <div class="home-brand">
+        <!-- Usa el mismo logo que en el login -->
+        <mat-icon class="lab-icon">medical_services</mat-icon>
+        <span class="home-brand-title">Medical Services</span>
+      </div>
+
+      <nav class="home-nav">
         <button
-          mat-raised-button
-          color="primary"
+          mat-button
+          class="home-nav-link"
           (click)="goToLogin('/labs')"
         >
-          Ir a Labs
+          Resultados de exámenes
         </button>
-      </mat-card-actions>
-    </mat-card>
 
-    <mat-card class="home-card">
-      <mat-card-title>Órdenes</mat-card-title>
-      <mat-card-content>
-        Revisa y administra las órdenes médicas.
-      </mat-card-content>
-      <mat-card-actions>
         <button
-          mat-raised-button
-          color="primary"
+          mat-button
+          class="home-nav-link"
           (click)="goToLogin('/orders')"
         >
-          Ir a Orders
+          Órdenes médicas
         </button>
-      </mat-card-actions>
-    </mat-card>
 
-    <mat-card class="home-card">
-      <mat-card-title>Perfil</mat-card-title>
-      <mat-card-content>
-        Gestiona los datos y preferencias de tu cuenta.
-      </mat-card-content>
-      <mat-card-actions>
         <button
-          mat-raised-button
-          color="primary"
+          mat-button
+          class="home-nav-link"
           (click)="goToLogin('/profile')"
         >
-          Ir a Perfil
+          Mi clínica
         </button>
-      </mat-card-actions>
-    </mat-card>
 
-    <mat-card class="home-card login-card">
-      <mat-card-title>Iniciar sesión</mat-card-title>
-      <mat-card-content>
-        Si ya tienes cuenta, puedes acceder directamente al sistema.
-      </mat-card-content>
-      <mat-card-actions>
         <button
           mat-stroked-button
           color="accent"
+          class="home-login-button"
           (click)="goToLogin()"
         >
-          Ir al login
+          Iniciar sesión
         </button>
-      </mat-card-actions>
-    </mat-card>
+      </nav>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="home-main">
+      <!-- Columna izquierda: texto -->
+      <section class="home-hero">
+        <h1>Servicios en línea</h1>
+        <p class="hero-text">
+          Te ofrecemos una variedad de servicios para resolver tus necesidades
+          de salud y procesos administrativos.
+        </p>
+        <p class="hero-text">
+          Ingresa con tu cuenta para revisar resultados, gestionar órdenes
+          y acceder a tu información clínica.
+        </p>
+      </section>
+
+      <!-- Columna derecha: tarjetas -->
+      <section class="home-tiles">
+        <div class="tiles-grid">
+          <mat-card
+            class="tile-card"
+            (click)="goToLogin('/labs')"
+          >
+            <mat-card-content>
+              <div class="tile-icon">
+                <mat-icon>science</mat-icon>
+              </div>
+              <div class="tile-title">Resultados de exámenes</div>
+              <div class="tile-subtitle">
+                Consulta tus informes de laboratorio en línea.
+              </div>
+            </mat-card-content>
+          </mat-card>
+
+          <mat-card
+            class="tile-card"
+            (click)="goToLogin('/orders')"
+          >
+            <mat-card-content>
+              <div class="tile-icon">
+                <mat-icon>assignment</mat-icon>
+              </div>
+              <div class="tile-title">Órdenes médicas</div>
+              <div class="tile-subtitle">
+                Revisa y gestiona tus órdenes y solicitudes.
+              </div>
+            </mat-card-content>
+          </mat-card>
+
+          <mat-card
+            class="tile-card"
+            (click)="goToLogin('/profile')"
+          >
+            <mat-card-content>
+              <div class="tile-icon">
+                <mat-icon>person</mat-icon>
+              </div>
+              <div class="tile-title">Mi clínica</div>
+              <div class="tile-subtitle">
+                Accede a tu perfil y datos personales.
+              </div>
+            </mat-card-content>
+          </mat-card>
+
+          <mat-card
+            class="tile-card"
+            (click)="goToLogin()"
+          >
+            <mat-card-content>
+              <div class="tile-icon">
+                <mat-icon>login</mat-icon>
+              </div>
+              <div class="tile-title">Iniciar sesión</div>
+              <div class="tile-subtitle">
+                Ingresa para utilizar todos los servicios en línea.
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </section>
+    </main>
   </div>
 </div>
-
