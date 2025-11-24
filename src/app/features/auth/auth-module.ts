@@ -7,12 +7,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { LoginPage } from './pages/login-page/login-page'; 
+import { LoginPage } from './pages/login-page/login-page';
+import { RegisterPage } from './pages/register-page/register-page'; 
 
 
 @NgModule({
   declarations: [
      LoginPage,
+     RegisterPage,
   ],
   imports: [
     CommonModule,

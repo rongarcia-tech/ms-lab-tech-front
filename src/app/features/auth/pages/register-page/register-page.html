@@ -1,0 +1,126 @@
+<div class="register-wrapper">
+  <mat-card class="register-card">
+    <mat-card-header class="card-header-center">
+      <mat-card-title>Registro de técnico</mat-card-title>
+      <mat-icon class="lab-icon">medical_services</mat-icon>
+      <mat-card-subtitle>Crear usuario con rol TECH (mock)</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Usuario</mat-label>
+          <input matInput formControlName="username" placeholder="tech01">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email" placeholder="tech01@example.com">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Contraseña</mat-label>
+            <input
+                matInput
+                formControlName="password"
+                [type]="hidePassword ? 'password' : 'text'"
+                placeholder="••••••••"
+                autocomplete="new-password"
+            >
+            
+            <mat-hint class="password-hint">
+                Mínimo 12 caracteres, con mayúscula, minúscula, número y símbolo.
+            </mat-hint>
+            <button 
+                mat-icon-button 
+                matSuffix 
+                type="button" 
+                (click)="togglePasswordVisibility()" 
+                aria-label="Toggle password visibility"
+            >
+                <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+        </mat-form-field>
+
+            <div
+            *ngIf="form.get('password')?.touched && form.get('password')?.invalid"
+            class="password-error-message"
+            >
+            <ng-container *ngIf="form.get('password')?.errors?.['required']">
+                La contraseña es obligatoria.
+            </ng-container>
+            <ng-container *ngIf="form.get('password')?.errors?.['minlength']">
+                Debe tener al menos 12 caracteres.
+            </ng-container>
+            <ng-container *ngIf="form.get('password')?.errors?.['pattern']">
+                Debe incluir mayúscula, minúscula, número y símbolo.
+            </ng-container>
+            </div>
+
+
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Confirmar contraseña</mat-label>
+            <input
+                matInput
+                formControlName="confirmPassword"
+                [type]="hidePassword ? 'password' : 'text'"
+                placeholder="••••••••"
+            >
+            <button 
+                mat-icon-button 
+                matSuffix 
+                type="button" 
+                (click)="togglePasswordVisibility1()" 
+                aria-label="Toggle password visibility"
+            >
+                <mat-icon>{{ hidePassword1 ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+            </mat-form-field>
+
+            <div
+            *ngIf="form.get('confirmPassword')?.touched 
+                    && form.get('confirmPassword')?.value 
+                    && form.get('password')?.value"
+            >
+            <div
+                *ngIf="form.get('confirmPassword')?.value === form.get('password')?.value"
+                class="password-match"
+            >
+                Las contraseñas coinciden.
+            </div>
+
+            <div
+                *ngIf="form.get('confirmPassword')?.value !== form.get('password')?.value"
+                class="password-mismatch"
+            >
+                Las contraseñas no coinciden.
+            </div>
+            </div>
+
+      </form>
+    </mat-card-content>
+
+    <mat-card-actions>
+      <button
+        mat-flat-button
+        color="primary"
+        class="full-width"
+        type="submit"
+        [disabled]="form.invalid || loading"
+        (click)="onSubmit()"
+      >
+        {{ loading ? 'Registrando...' : 'Registrar' }}
+      </button>
+
+      <button
+        mat-button
+        class="full-width"
+        type="button"
+        (click)="goToLogin()"
+      >
+        Ir a Login
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>
+
