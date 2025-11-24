@@ -1,0 +1,9 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: angular-frontend
+    ports:
+      - "4200:80"   # host:container → tu PC usa http://localhost:4200
+    restart: unless-stopped
