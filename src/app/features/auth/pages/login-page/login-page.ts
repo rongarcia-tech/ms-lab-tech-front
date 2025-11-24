@@ -12,6 +12,7 @@ import { AuthService } from '../../../../core/services/auth';
 export class LoginPage {
   form: FormGroup;
   loading = false;
+  hidePassword = true;
   errorMessage: string | null = null;
 
   constructor(
@@ -23,6 +24,10 @@ export class LoginPage {
       username: ['', [Validators.required]],
       password: ['', [Validators.required]],
     });
+  }
+  // 2. Función para alternar la visibilidad
+  togglePasswordVisibility(): void {
+    this.hidePassword = !this.hidePassword;
   }
 
   onSubmit(): void {

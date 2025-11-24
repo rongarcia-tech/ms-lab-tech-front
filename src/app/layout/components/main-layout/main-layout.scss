@@ -9,3 +9,38 @@
 .layout-content {
   padding: 16px;
 }
+
+// Breakpoint 1: Desktop (≥1024px) - Sidebar + Header visible
+@media (min-width: 1024px) {
+  .layout-sidenav {
+    width: 220px;
+    display: block !important;
+  }
+}
+
+// Breakpoint 2: Tablet (600px - 1023px) - Sidebar oculto, solo Header
+@media (max-width: 1023px) {
+  .layout-sidenav {
+    width: 200px;
+  }
+  
+  mat-sidenav {
+    mode: over;
+  }
+}
+
+// Breakpoint 3: Mobile (<600px) - Sidebar oculto, solo Header compacto
+@media (max-width: 599px) {
+  .layout-sidenav {
+    width: 100%;
+    max-width: 250px;
+  }
+  
+  .layout-content {
+    padding: 8px;
+  }
+  
+  mat-sidenav {
+    mode: over;
+  }
+}

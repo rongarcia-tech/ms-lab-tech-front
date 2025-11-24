@@ -31,3 +31,24 @@ mat-card-header {
   font-size: 0.9rem;
 }
 
+.header-content {
+  // Centramos el bloque completo (Título, Ícono, Subtítulo)
+  text-align: center; 
+  display: block; // Permite que mat-card-title y mat-card-subtitle se comporten como bloques
+
+  mat-card-title {
+    // Espacio después del título
+    margin-bottom: 5px; 
+  }
+}
+
+.lab-icon {
+  // Estilo para el ícono
+  font-size: 48px; // Tamaño visible
+  width: 48px;
+  height: 48px;
+  // Color temático (ejemplo: azul primario o verde laboratorio)
+  color: #00bcd4; // Ejemplo de un color cian/laboratorio
+  display: block; // Asegura que ocupe su propia línea
+  margin: 0 auto 10px auto; // Centrado horizontal y espacio inferior
+}

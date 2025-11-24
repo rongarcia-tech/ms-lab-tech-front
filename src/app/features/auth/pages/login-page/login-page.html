@@ -1,8 +1,11 @@
 <div class="login-wrapper">
   <mat-card class="login-card">
     <mat-card-header>
-      <mat-card-title>Iniciar sesión</mat-card-title>
-      <mat-card-subtitle>MS Lab Panel</mat-card-subtitle>
+      <div class="header-content">
+        <mat-card-title>MEDICAL SERVICES</mat-card-title>
+        <mat-icon class="lab-icon">medical_services</mat-icon>
+        <mat-card-subtitle>Inicia sesion</mat-card-subtitle>
+      </div>
     </mat-card-header>
 
     <mat-card-content>
@@ -13,25 +16,32 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Contraseña</mat-label>
-          <input
-            matInput
-            formControlName="password"
-            [type]="'password'"
-            placeholder="••••••••"
-          >
-          <button mat-icon-button matSuffix type="button" disabled>
-            <mat-icon>visibility_off</mat-icon>
-          </button>
-        </mat-form-field>
+  <mat-label>Contraseña</mat-label>
+  <input
+    matInput
+    formControlName="password"
+    
+    [type]="hidePassword ? 'password' : 'text'"
+    
+    placeholder="••••••••"
+    autocomplete="new-password"
+  >
+  <button 
+    mat-icon-button 
+    matSuffix 
+    type="button" 
+    (click)="togglePasswordVisibility()" 
+    aria-label="Toggle password visibility"
+  >
+    <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+  </button>
+</mat-form-field>
 
         <div *ngIf="errorMessage" class="error-message">
           {{ errorMessage }}
         </div>
-      </form>
-    </mat-card-content>
 
-    <mat-card-actions>
+        <mat-card-actions>
       <button
         mat-flat-button
         color="primary"
@@ -43,5 +53,9 @@
         {{ loading ? 'Ingresando...' : 'Entrar' }}
       </button>
     </mat-card-actions>
+      </form>
+    </mat-card-content>
+
+    
   </mat-card>
 </div>

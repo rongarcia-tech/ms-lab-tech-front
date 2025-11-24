@@ -11,3 +11,18 @@
 .spacer {
   flex: 1 1 auto;
 }
+
+// Breakpoint 3: Mobile (<600px) - Ocultar botones del menú
+@media (max-width: 599px) {
+  button {
+    display: none;
+  }
+}
+
+// Breakpoint 2: Tablet (600px - 1023px) - Mostrar solo algunos botones
+@media (max-width: 1023px) {
+  button {
+    padding: 0 8px;
+    font-size: 0.9rem;
+  }
+}
