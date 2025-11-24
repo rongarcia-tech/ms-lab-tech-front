@@ -1,1 +1,62 @@
-<p>labs-page works!</p>
+<div class="labs-page">
+  <h1>Laboratorios</h1>
+
+  <div class="labs-list">
+    <ng-container *ngIf="labs$ | async as labs; else loading">
+      <ng-container *ngIf="labs.length > 0; else empty">
+        <mat-card
+          class="lab-card"
+          *ngFor="let lab of labs"
+        >
+          <mat-card-header>
+            <mat-card-title>{{ lab.name }}</mat-card-title>
+            <mat-card-subtitle>{{ lab.code }}</mat-card-subtitle>
+          </mat-card-header>
+
+          <mat-card-content>
+            <p class="lab-address">
+              <mat-icon>location_on</mat-icon>
+              {{ lab.address }}
+            </p>
+
+            <p class="lab-phone">
+              <mat-icon>call</mat-icon>
+              {{ lab.phone }}
+            </p>
+
+            <div class="lab-tests">
+              <span>Exámenes soportados:</span>
+              <mat-chip-listbox>
+                <mat-chip *ngFor="let test of lab.supportedTests">
+                  {{ test }}
+                </mat-chip>
+              </mat-chip-listbox>
+            </div>
+          </mat-card-content>
+
+          <mat-card-actions>
+            <button mat-stroked-button color="primary">
+              Ver detalle (mock)
+            </button>
+
+            <span class="lab-status" [class.inactive]="!lab.active">
+              <mat-icon>
+                {{ lab.active ? 'check_circle' : 'highlight_off' }}
+              </mat-icon>
+              {{ lab.active ? 'Activo' : 'Inactivo' }}
+            </span>
+          </mat-card-actions>
+        </mat-card>
+      </ng-container>
+    </ng-container>
+
+    <ng-template #loading>
+      <p>Cargando laboratorios (mock)...</p>
+    </ng-template>
+
+    <ng-template #empty>
+      <p>No hay laboratorios registrados (mock).</p>
+    </ng-template>
+  </div>
+</div>
+

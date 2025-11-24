@@ -6,6 +6,7 @@ import { LabsPage } from './features/labs/pages/labs-page/labs-page';
 import { OrdersPage } from './features/orders/pages/orders-page/orders-page';
 import { ProfilePage } from './features/users/pages/profile-page/profile-page';
 import { MainLayout } from './layout/components/main-layout/main-layout';
+import { AuthGuard } from './core/guards/auth-guard';
 
 const routes: Routes = [
   { path: 'login', component: LoginPage },
@@ -13,6 +14,7 @@ const routes: Routes = [
   {
     path: '',
     component: MainLayout,
+    canActivate: [AuthGuard],
     children: [
       { path: 'labs', component: LabsPage },
       { path: 'orders', component: OrdersPage },

@@ -1,0 +1,18 @@
+.orders-page {
+  h1 {
+    margin-bottom: 16px;
+  }
+}
+
+.orders-list {
+  display: grid;
+  gap: 16px;
+}
+
+.order-card {
+  display: block;
+}
+
+.status-chip {
+  margin-top: 8px;
+}

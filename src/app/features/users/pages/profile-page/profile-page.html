@@ -1,1 +1,54 @@
-<p>profile-page works!</p>
+<div class="profile-page">
+  <h1>Perfil</h1>
+
+  <ng-container *ngIf="user$ | async as user; else loading">
+    <mat-card class="profile-card">
+      <mat-card-header>
+        <mat-card-title>{{ user.username }}</mat-card-title>
+        <mat-card-subtitle>{{ user.email }}</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <p>
+          <strong>ID externo:</strong> {{ user.externalId }}
+        </p>
+        <p>
+          <strong>Laboratorio:</strong>
+          <ng-container *ngIf="user.labCode; else noLab">
+            {{ user.labCode }}
+          </ng-container>
+          <ng-template #noLab>
+            No asociado a un laboratorio
+          </ng-template>
+        </p>
+
+        <p>
+          <strong>Activo:</strong>
+          {{ user.active ? 'Sí' : 'No' }}
+        </p>
+
+        <p>
+          <strong>Creado:</strong> {{ user.createdAt }}
+        </p>
+
+        <p>
+          <strong>Actualizado:</strong> {{ user.updatedAt }}
+        </p>
+
+        <div class="roles">
+          <strong>Roles:</strong>
+          <mat-chip-set>
+            <mat-chip *ngFor="let role of user.roles">
+              {{ role }}
+            </mat-chip>
+          </mat-chip-set>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </ng-container>
+
+  <ng-template #loading>
+    <p>Cargando perfil (mock)...</p>
+  </ng-template>
+</div>
+

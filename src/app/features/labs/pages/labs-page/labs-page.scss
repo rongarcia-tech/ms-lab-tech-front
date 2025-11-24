@@ -1,0 +1,44 @@
+.labs-page {
+  h1 {
+    margin-bottom: 16px;
+  }
+}
+
+.labs-list {
+  display: grid;
+  gap: 16px;
+}
+
+.lab-card {
+  display: block;
+}
+
+.lab-address,
+.lab-phone {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.lab-tests {
+  margin-top: 8px;
+
+  span {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 0.9rem;
+    opacity: 0.8;
+  }
+}
+
+.lab-status {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.9rem;
+
+  &.inactive {
+    color: #d32f2f;
+  }
+}

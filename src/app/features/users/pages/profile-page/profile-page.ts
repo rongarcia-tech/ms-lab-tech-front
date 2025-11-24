@@ -1,4 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { UserResponse } from '../../../../shared/models/user.models';
+import { UserService } from '../../../../core/services/user.service';
 
 @Component({
   selector: 'app-profile-page',
@@ -6,6 +9,14 @@ import { Component } from '@angular/core';
   templateUrl: './profile-page.html',
   styleUrl: './profile-page.scss',
 })
-export class ProfilePage {
+export class ProfilePage implements OnInit {
+  user$!: Observable<UserResponse>;
 
+  constructor(
+    private userService: UserService,
+  ) {}
+
+  ngOnInit(): void {
+    this.user$ = this.userService.getCurrentUser();
+  }
 }
