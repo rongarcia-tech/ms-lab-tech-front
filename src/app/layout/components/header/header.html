@@ -1,13 +1,23 @@
 <mat-toolbar color="primary" class="header-toolbar">
+  <!-- Botón hamburguesa solo en pantallas < 800 -->
+  <button
+    *ngIf="showMenuButton"
+    mat-icon-button
+    (click)="onMenuClick()"
+    class="menu-button"
+  >
+    <mat-icon>menu</mat-icon>
+  </button>
+
   <span class="app-title">MEDICAL SERVICES</span>
 
   <span class="spacer"></span>
 
-  <!-- Menú principal, solo si está logueado -->
+  <!-- Menú principal en header solo si está logueado -->
   <ng-container *ngIf="loggedIn$ | async">
-    <button mat-button routerLink="/labs">Labs</button>
-    <button mat-button routerLink="/orders">Orders</button>
-    <button mat-button routerLink="/profile">Perfil</button>
+    <button mat-button class="nav-button" routerLink="/labs">Labs</button>
+    <button mat-button class="nav-button" routerLink="/orders">Orders</button>
+    <button mat-button class="nav-button" routerLink="/profile">Perfil</button>
 
     <button mat-button color="warn" (click)="logout()">
       Salir

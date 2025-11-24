@@ -1,17 +1,22 @@
 <mat-sidenav-container class="layout-container">
   <mat-sidenav
+    #sidenav
     class="layout-sidenav"
-    mode="side"
-    opened="true"
+    [mode]="sidenavMode"
+    [opened]="sidenavOpened"
   >
     <app-sidebar></app-sidebar>
   </mat-sidenav>
 
   <mat-sidenav-content>
-    <app-header></app-header>
+    <app-header
+      [showMenuButton]="!isDesktop"
+      (menuClick)="sidenav.toggle()"
+    ></app-header>
 
     <main class="layout-content">
       <router-outlet></router-outlet>
     </main>
   </mat-sidenav-content>
 </mat-sidenav-container>
+

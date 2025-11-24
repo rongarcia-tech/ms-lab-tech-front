@@ -12,17 +12,33 @@
   flex: 1 1 auto;
 }
 
-// Breakpoint 3: Mobile (<600px) - Ocultar botones del menú
-@media (max-width: 599px) {
-  button {
-    display: none;
+.menu-button {
+  margin-right: 8px;
+}
+
+/* Desktop (≥800px): header como navegación principal */
+@media (min-width: 800px) {
+  .menu-button {
+    display: none; // en desktop no hace falta burger
   }
 }
 
-// Breakpoint 2: Tablet (600px - 1023px) - Mostrar solo algunos botones
-@media (max-width: 1023px) {
-  button {
+/* Tablet (600–799px): header compacto, nav visible pero más ajustado */
+@media (min-width: 600px) and (max-width: 799px) {
+  .nav-button {
     padding: 0 8px;
     font-size: 0.9rem;
+  }
+}
+
+/* Mobile (<600px): header ultra compacto, esconder nav de texto si quieres
+   y dejar solo el menú lateral */
+@media (max-width: 599px) {
+  .nav-button {
+    display: none;
+  }
+
+  .app-title {
+    font-size: 1rem;
   }
 }

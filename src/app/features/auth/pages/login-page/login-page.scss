@@ -9,38 +9,23 @@
 
 .login-card {
   width: 100%;
-  max-width: 400px;
+  max-width: 360px;
 }
 
-.full-width {
-  width: 100%;
-}
-
-mat-card-header {
-  /* Habilita Flexbox en el encabezado */
-  display: flex; 
-  /* Centra horizontalmente los elementos hijos */
-  justify-content: center; 
-  /* Nota: mat-card-title es el único hijo en tu ejemplo, por lo que lo centrará. */
-  margin-bottom: 20px;
-}
-
-.error-message {
-  color: #d32f2f;
-  margin-top: 8px;
-  font-size: 0.9rem;
-}
-
-.header-content {
-  // Centramos el bloque completo (Título, Ícono, Subtítulo)
-  text-align: center; 
-  display: block; // Permite que mat-card-title y mat-card-subtitle se comporten como bloques
-
-  mat-card-title {
-    // Espacio después del título
-    margin-bottom: 5px; 
+/* Tablet */
+@media (min-width: 600px) and (max-width: 799px) {
+  .login-card {
+    max-width: 400px;
   }
 }
+
+/* Desktop */
+@media (min-width: 800px) {
+  .login-card {
+    max-width: 440px;
+  }
+}
+
 
 .lab-icon {
   // Estilo para el ícono

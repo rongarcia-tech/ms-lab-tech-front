@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 
@@ -11,6 +11,9 @@ import { AuthService } from '../../../core/services/auth';
   styleUrls: ['./header.scss'],
 })
 export class Header {
+  @Input() showMenuButton = false;
+  @Output() menuClick = new EventEmitter<void>();
+
   loggedIn$!: Observable<boolean>;
 
   constructor(
@@ -23,5 +26,9 @@ export class Header {
   logout(): void {
     this.authService.logout();
     this.router.navigate(['/login']);
+  }
+
+  onMenuClick(): void {
+    this.menuClick.emit();
   }
 }
