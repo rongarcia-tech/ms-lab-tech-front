@@ -35,7 +35,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    MatSlideToggleModule,
+    MatSlideToggleModule
   ]
 })
 export class OrdersModule { }

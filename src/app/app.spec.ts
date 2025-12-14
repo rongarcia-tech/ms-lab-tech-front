@@ -1,16 +1,14 @@
 import { TestBed } from '@angular/core/testing';
-import { RouterModule } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { App } from './app';
 
 describe('App', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-        RouterModule.forRoot([])
+        RouterTestingModule, // mejor que RouterModule.forRoot([]) para tests
       ],
-      declarations: [
-        App
-      ],
+      declarations: [App],
     }).compileComponents();
   });
 
@@ -20,10 +18,13 @@ describe('App', () => {
     expect(app).toBeTruthy();
   });
 
-  it('should render title', () => {
+  it('should render router outlet', () => {
     const fixture = TestBed.createComponent(App);
     fixture.detectChanges();
+
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, ms-lab-frontend');
+
+    // ✅ si tu App tiene <router-outlet></router-outlet>
+    expect(compiled.querySelector('router-outlet')).not.toBeNull();
   });
 });

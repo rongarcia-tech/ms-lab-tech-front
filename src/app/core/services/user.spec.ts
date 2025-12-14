@@ -1,13 +1,23 @@
 import { TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { UserService } from './user.service';
+import { AuthService } from './auth';
 
-import { User } from './user';
+describe('UserService', () => {
+  let service: UserService;
 
-describe('User', () => {
-  let service: User;
+  const authServiceMock = {
+    // agrega aquí solo lo que realmente use UserService
+    getToken: () => 'fake-token',
+  };
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(User);
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+      providers: [{ provide: AuthService, useValue: authServiceMock }],
+    });
+
+    service = TestBed.inject(UserService);
   });
 
   it('should be created', () => {
