@@ -1,81 +1,38 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { MOCK_AUTH_USERS, MockAuthUser } from '../../shared/mocks/auth.mocks';
+import { BehaviorSubject, Observable, of, map, catchError, switchMap, tap } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { AuthLoginRequest, AuthLoginResponse } from '../../shared/models/auth.models';
 import { UserResponse } from '../../shared/models/user.models';
+import { API_AUTH_BASE_URL } from '../config/api.config';
 
-const TOKEN_KEY = 'mslab_token_mock';
-const CURRENT_USER_KEY = 'mslab_current_user_username';
+const TOKEN_KEY = 'mslab_token';
+const CURRENT_USER_KEY = 'mslab_current_user';
 
-@Injectable({
-  providedIn: 'root',
-})
+type RegisterResult = 'OK' | 'USERNAME_TAKEN';
+
+@Injectable({ providedIn: 'root' })
 export class AuthService {
   private loggedInSubject = new BehaviorSubject<boolean>(this.hasToken());
-
-  // lista viva de usuarios mock (se inicializa con MOCK_AUTH_USERS)
-  private authUsersSubject = new BehaviorSubject<MockAuthUser[]>([...MOCK_AUTH_USERS]);
-
   loggedIn$ = this.loggedInSubject.asObservable();
 
-  constructor() {}
+  constructor(private http: HttpClient) {}
 
-  // Login contra la lista viva
   login(username: string, password: string): Observable<boolean> {
-    const trimmedUsername = username.trim();
-    const trimmedPassword = password.trim();
+    const body: AuthLoginRequest = { username: username.trim(), password: password.trim() };
 
-    const users = this.authUsersSubject.value;
-
-    const match = users.find(
-      u =>
-        u.username === trimmedUsername &&
-        u.password === trimmedPassword,
+    return this.http.post<AuthLoginResponse>(`${API_AUTH_BASE_URL}/auth/login`, body).pipe(
+      tap(res => {
+        localStorage.setItem(TOKEN_KEY, res.token);
+        this.loggedInSubject.next(true);
+      }),
+      // opcional pero recomendado: cargar /users/me para tener UserResponse real
+      switchMap(() => this.getMe().pipe(
+        tap(user => localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user))),
+        map(() => true),
+        // si /users/me falla por cualquier razón, igual consideramos login OK
+        catchError(() => of(true))
+      ))
     );
-
-    if (!match) {
-      return of(false);
-    }
-
-    const fakeToken = `fake-jwt-token-${match.user.username}`;
-    localStorage.setItem(TOKEN_KEY, fakeToken);
-    localStorage.setItem(CURRENT_USER_KEY, match.user.username);
-
-    this.loggedInSubject.next(true);
-    return of(true);
-  }
-
-  // Registro de un nuevo usuario TECH en memoria
-  registerTech(username: string, email: string, password: string): Observable<'OK' | 'USERNAME_TAKEN'> {
-    const trimmedUsername = username.trim();
-
-    const users = this.authUsersSubject.value;
-
-    const exists = users.some(u => u.username === trimmedUsername);
-    if (exists) {
-      return of('USERNAME_TAKEN');
-    }
-
-    const newUser: UserResponse = {
-      id: users.length + 1,
-      externalId: crypto.randomUUID ? crypto.randomUUID() : `mock-${Date.now()}`,
-      username: trimmedUsername,
-      email,
-      roles: ['ROLE_LAB_TECHNICIAN'],
-      labCode: null,
-      active: true,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-
-    const newAuthUser: MockAuthUser = {
-      username: trimmedUsername,
-      password,
-      user: newUser,
-    };
-
-    this.authUsersSubject.next([...users, newAuthUser]);
-
-    return of('OK');
   }
 
   logout(): void {
@@ -88,15 +45,56 @@ export class AuthService {
     return this.loggedInSubject.value;
   }
 
+  getToken(): string | null {
+    return localStorage.getItem(TOKEN_KEY);
+  }
+
+  // Tu app lo usa (UserService). Lo mantenemos.
   getCurrentUser(): UserResponse | null {
-    const username = localStorage.getItem(CURRENT_USER_KEY);
-    if (!username) {
+    const raw = localStorage.getItem(CURRENT_USER_KEY);
+    if (!raw) return null;
+    try {
+      return JSON.parse(raw) as UserResponse;
+    } catch {
       return null;
     }
+  }
 
-    const users = this.authUsersSubject.value;
-    const match = users.find(u => u.user.username === username);
-    return match ? match.user : null;
+  // Backend: GET /users/me (autenticado)
+  getMe(): Observable<UserResponse> {
+    return this.http.get<UserResponse>(`${API_AUTH_BASE_URL}/users/me`);
+  }
+
+  // Tu UI lo llama. En backend ES: POST /users (solo ADMIN)
+  registerTech(username: string, email: string, password: string): Observable<RegisterResult> {
+    const body = {
+      username: username.trim(),
+      email: email.trim(),
+      password,
+      // 👇 aquí hay 2 opciones según tu backend:
+      // A) si backend recibe roles como string[]:
+      roles: ['LAB_TECH'],
+      // B) si backend usa ROLE_ prefijo:
+      // roles: ['ROLE_LAB_TECH'],
+
+      labCode: null,
+      active: true
+    };
+
+    return this.http.post(`${API_AUTH_BASE_URL}/users`, body).pipe(
+      map(() => 'OK' as RegisterResult),
+      catchError(err => {
+        // Si tu backend responde 409 por username duplicado:
+        if (err?.status === 409) return of('USERNAME_TAKEN' as RegisterResult);
+
+        // Si responde 400 con mensaje “username already exists” etc.:
+        const msg = (err?.error?.message || err?.error || '').toString().toLowerCase();
+        if (msg.includes('username') && msg.includes('exist')) return of('USERNAME_TAKEN' as RegisterResult);
+
+        // cualquier otro error → lo tratamos como error real
+        throw err;
+      })
+    );
   }
 
   private hasToken(): boolean {

@@ -1,0 +1,18 @@
+<div class="roles-page">
+  <h1>Roles</h1>
+  <mat-card class="roles-card">
+    <mat-card-content>
+      <ng-container *ngIf="roles$ | async as roles">
+        <ng-container *ngIf="roles.length > 0; else empty">
+          <mat-chip-listbox>
+            <mat-chip *ngFor="let r of roles">
+              {{ r.name }} — {{ r.description }}
+            </mat-chip>
+          </mat-chip-listbox>
+        </ng-container>
+        <ng-template #empty><p>No hay roles.</p></ng-template>
+      </ng-container>
+    </mat-card-content>
+  </mat-card>
+</div>
+

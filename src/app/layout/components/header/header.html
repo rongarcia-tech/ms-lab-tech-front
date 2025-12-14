@@ -15,9 +15,49 @@
 
   <!-- Menú principal en header solo si está logueado -->
   <ng-container *ngIf="loggedIn$ | async">
-    <button mat-button class="nav-button" routerLink="/labs">Labs</button>
-    <button mat-button class="nav-button" routerLink="/orders">Orders</button>
-    <button mat-button class="nav-button" routerLink="/profile">Perfil</button>
+    <!-- LABORATORIOS -->
+<button
+  mat-button
+  class="nav-button"
+  [matMenuTriggerFor]="labsMenu"
+  #labsTrigger="matMenuTrigger"
+  (mouseenter)="openMenu(labsTrigger)"
+  (mouseleave)="scheduleClose()"
+>
+  Laboratorios
+</button>
+
+<mat-menu #labsMenu="matMenu" yPosition="below">
+  <div (mouseenter)="cancelClose()" (mouseleave)="closeActiveMenu()">
+  <button mat-menu-item routerLink="/labs">Labs</button>
+  <button mat-menu-item routerLink="/orders">Orders</button>
+  <mat-divider></mat-divider>
+  <button mat-menu-item routerLink="/labs/new">Crear Lab</button>
+  <button mat-menu-item routerLink="/orders/new">Crear Orden</button>
+  </div>
+</mat-menu>
+
+<!-- USUARIOS -->
+<button
+  mat-button
+  class="nav-button"
+  [matMenuTriggerFor]="usersMenu"
+  #usersTrigger="matMenuTrigger"
+  (mouseenter)="openMenu(usersTrigger)"
+  (mouseleave)="scheduleClose()"
+>
+  Usuarios
+</button>
+
+<mat-menu #usersMenu="matMenu" yPosition="below">
+  <div (mouseenter)="cancelClose()" (mouseleave)="closeActiveMenu()">
+  <button mat-menu-item routerLink="/admin/users">Usuarios</button>
+  <button mat-menu-item routerLink="/admin/roles">Roles</button>
+  </div>
+</mat-menu>
+
+<button mat-button class="nav-button" routerLink="/profile">Perfil</button>
+
 
     <button mat-button color="warn" (click)="logout()">
       Salir

@@ -16,14 +16,18 @@
   margin-right: 8px;
 }
 
-/* Desktop (≥800px): header como navegación principal */
+.nav-button {
+  white-space: nowrap;
+}
+
+/* Desktop */
 @media (min-width: 800px) {
   .menu-button {
-    display: none; // en desktop no hace falta burger
+    display: none;
   }
 }
 
-/* Tablet (600–799px): header compacto, nav visible pero más ajustado */
+/* Tablet */
 @media (min-width: 600px) and (max-width: 799px) {
   .nav-button {
     padding: 0 8px;
@@ -31,8 +35,7 @@
   }
 }
 
-/* Mobile (<600px): header ultra compacto, esconder nav de texto si quieres
-   y dejar solo el menú lateral */
+/* Mobile */
 @media (max-width: 599px) {
   .nav-button {
     display: none;

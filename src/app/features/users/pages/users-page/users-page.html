@@ -1,0 +1,42 @@
+<div class="users-page">
+  <div class="header-row">
+    <h1>Usuarios</h1>
+    <a mat-raised-button color="primary" routerLink="/admin/users/new">
+      <mat-icon>person_add</mat-icon>
+      Crear usuario
+    </a>
+  </div>
+
+  <div class="users-list">
+    <ng-container *ngIf="users$ | async as users; else loading">
+      <ng-container *ngIf="users.length > 0; else empty">
+        <mat-card class="user-card" *ngFor="let u of users">
+          <mat-card-header>
+            <mat-card-title>{{ u.username }}</mat-card-title>
+            <mat-card-subtitle>{{ u.email }}</mat-card-subtitle>
+          </mat-card-header>
+
+          <mat-card-content>
+            <div class="row"><strong>Activo:</strong> {{ u.active ? 'Sí' : 'No' }}</div>
+            <div class="row"><strong>LabCode:</strong> {{ u.labCode || '-' }}</div>
+            <div class="row">
+              <strong>Roles:</strong>
+              <mat-chip-listbox>
+                <mat-chip *ngFor="let r of (u.roles || [])">{{ r }}</mat-chip>
+              </mat-chip-listbox>
+            </div>
+          </mat-card-content>
+
+          <mat-card-actions align="end">
+            <a mat-button color="primary" [routerLink]="['/admin/users', u.id, 'edit']">
+              <mat-icon>edit</mat-icon> Editar
+            </a>
+          </mat-card-actions>
+        </mat-card>
+      </ng-container>
+    </ng-container>
+
+    <ng-template #loading><p>Cargando usuarios...</p></ng-template>
+    <ng-template #empty><p>No hay usuarios.</p></ng-template>
+  </div>
+</div>

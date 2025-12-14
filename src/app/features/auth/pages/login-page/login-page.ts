@@ -47,12 +47,12 @@ export class LoginPage {
         if (success) {
           this.router.navigate(['/labs']);
         } else {
-          this.errorMessage = 'Credenciales inválidas (mock).';
+          this.errorMessage = 'Credenciales inválidas.';
         }
       },
       error: () => {
         this.loading = false;
-        this.errorMessage = 'Error al intentar iniciar sesión (mock).';
+        this.errorMessage = 'Error al intentar iniciar sesión.';
       }
     });
   }

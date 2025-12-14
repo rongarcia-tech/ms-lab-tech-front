@@ -1,0 +1,34 @@
+<div class="order-form-page">
+  <mat-card class="form-card">
+    <mat-card-header>
+      <mat-card-title>Crear orden</mat-card-title>
+      <mat-card-subtitle>MS Labs (8081) /orders</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Patient ID</mat-label>
+          <input matInput formControlName="patientId" placeholder="rut:22.222.222-2" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Requested Test</mat-label>
+          <input matInput formControlName="requestedTest" placeholder="PCR" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>LabCode (opcional)</mat-label>
+          <input matInput formControlName="labCode" placeholder="BIOCHECK" />
+        </mat-form-field>
+
+        <div class="actions">
+          <button mat-button type="button" routerLink="/orders">Cancelar</button>
+          <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || loading">
+            {{ loading ? 'Creando...' : 'Crear' }}
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

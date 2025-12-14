@@ -10,6 +10,15 @@
   grid-template-columns: 1fr;
 }
 
+.success {
+  background-color: #4caf50;
+  color: white;
+}
+.warning {
+  background-color: #ff9800;
+  color: white;
+}
+
 /* Tablet */
 @media (min-width: 600px) and (max-width: 799px) {
   .orders-list {

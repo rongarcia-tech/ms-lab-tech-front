@@ -72,6 +72,9 @@
             },
             "development": {
               "buildTarget": "ms-lab-frontend:build:development"
+            },
+            "test": {
+              "buildTarget": "proyecto_lab_tech:build:test"
             }
           },
           "defaultConfiguration": "development"

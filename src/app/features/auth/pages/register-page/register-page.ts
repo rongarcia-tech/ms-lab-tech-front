@@ -65,7 +65,7 @@ export class RegisterPage {
     this.loading = true;
 
     this.authService.registerTech(username, email, password).subscribe({
-      next: result => {
+      next:  (result: 'OK' | 'USERNAME_TAKEN') => {
         this.loading = false;
 
         if (result === 'USERNAME_TAKEN') {
@@ -73,14 +73,14 @@ export class RegisterPage {
           return;
         }
 
-        this.successMessage = 'Usuario registrado (mock) correctamente. Ahora puedes iniciar sesión.';
+        this.successMessage = 'Usuario registrado correctamente. Ahora puedes iniciar sesión.';
         // Si quieres, podrías redirigir directamente:
         // this.router.navigate(['/login']);
         this.form.reset();
       },
       error: () => {
         this.loading = false;
-        this.errorMessage = 'Error al registrar el usuario (mock).';
+        this.errorMessage = 'Error al registrar el usuario.';
       }
     });
   }

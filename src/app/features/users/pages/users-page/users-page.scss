@@ -1,0 +1,4 @@
+.users-page { padding: 16px; }
+.header-row { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.users-list { margin-top: 12px; display:grid; grid-template-columns: repeat(auto-fill,minmax(320px,1fr)); gap: 12px; }
+.user-card .row { margin: 6px 0; }

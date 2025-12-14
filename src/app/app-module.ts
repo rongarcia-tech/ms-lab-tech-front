@@ -7,6 +7,9 @@ import { CoreModule } from './core/core-module';
 import { SharedModule } from './shared/shared-module';
 import { LayoutModule } from './layout/layout-module';
 import { AuthModule } from './features/auth/auth-module';
+import { LabsModule } from './features/labs/labs-module';
+import { OrdersModule } from './features/orders/orders-module';
+import { UsersModule } from './features/users/users-module';
 
 @NgModule({
   declarations: [
@@ -20,7 +23,9 @@ import { AuthModule } from './features/auth/auth-module';
     SharedModule,
     LayoutModule,
     AuthModule,
-
+    LabsModule,
+    OrdersModule,
+    UsersModule,
   ],
   providers: [
     provideBrowserGlobalErrorListeners()
