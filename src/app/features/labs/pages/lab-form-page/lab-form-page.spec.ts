@@ -196,4 +196,101 @@ describe('LabFormPage', () => {
       expect(console.error).toHaveBeenCalled();
     });
   });
+
+  describe('submit', () => {
+    it('should create lab, parse supportedTests and navigate on success', () => {
+      component.ngOnInit();
+
+      component.form.patchValue({
+        code: 'LABX',
+        name: 'Lab X',
+        address: 'Addr',
+        phone: '123',
+        supportedTests: 't1, t2, ,t3'
+      });
+
+      labsService.createLab.and.returnValue(of({} as any));
+
+      component.submit();
+
+      expect(labsService.createLab).toHaveBeenCalledWith(jasmine.objectContaining({
+        code: 'LABX',
+        supportedTests: ['t1', 't2', 't3']
+      }));
+      expect(router.navigate).toHaveBeenCalledWith(['/labs']);
+      expect(component.loading).toBeFalse();
+    });
+
+    it('should log and stop loading on create error', () => {
+      component.ngOnInit();
+
+      component.form.patchValue({
+        code: 'LABX',
+        name: 'Lab X',
+        address: 'Addr',
+        phone: '123',
+        supportedTests: ''
+      });
+
+      labsService.createLab.and.returnValue(throwError(() => ({ status: 500 })));
+      const errSpy = spyOn(console, 'error');
+
+      component.submit();
+
+      expect(errSpy).toHaveBeenCalled();
+      expect(component.loading).toBeFalse();
+    });
+
+    it('should update lab and navigate on success', () => {
+      // prepare edit mode
+      activatedRoute.snapshot.paramMap.get = jasmine.createSpy().and.returnValue('10');
+      labsService.getLabById.and.returnValue(of({ id: 10, code: 'C10', name: 'N', address: 'A', phone: 'P' } as any));
+
+      component.ngOnInit();
+
+      component.form.patchValue({
+        name: 'Updated',
+        address: 'New Addr',
+        phone: '999'
+      });
+
+      labsService.updateLab.and.returnValue(of({} as any));
+
+      component.submit();
+
+      expect(labsService.updateLab).toHaveBeenCalledWith('10', jasmine.objectContaining({
+        name: 'Updated'
+      }));
+      expect(router.navigate).toHaveBeenCalledWith(['/labs']);
+      expect(component.loading).toBeFalse();
+    });
+
+    it('should log and stop loading on update error', () => {
+      activatedRoute.snapshot.paramMap.get = jasmine.createSpy().and.returnValue('11');
+      labsService.getLabById.and.returnValue(of({ id: 11, code: 'C11', name: 'N', address: 'A', phone: 'P' } as any));
+
+      component.ngOnInit();
+
+      component.form.patchValue({ name: 'X', address: 'A', phone: 'P' });
+
+      labsService.updateLab.and.returnValue(throwError(() => ({ status: 500 })));
+      const errSpy = spyOn(console, 'error');
+
+      component.submit();
+
+      expect(errSpy).toHaveBeenCalled();
+      expect(component.loading).toBeFalse();
+    });
+
+    it('should not call service when form invalid', () => {
+      component.ngOnInit();
+
+      component.form.patchValue({ code: '', name: '', address: '', phone: '' });
+
+      labsService.createLab.calls.reset();
+      component.submit();
+
+      expect(labsService.createLab).not.toHaveBeenCalled();
+    });
+  });
 });

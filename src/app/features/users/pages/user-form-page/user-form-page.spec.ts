@@ -144,4 +144,128 @@ describe('UserFormPage', () => {
 
     expect(component.form.invalid).toBeTrue();
   });
+
+  it('ngOnInit edit mode should load user and disable password', () => {
+    // prepare route to have id
+    activatedRouteMock.snapshot.paramMap = convertToParamMap({ id: '1' });
+    userService.getUserById.and.returnValue(of({ id: 1, username: 'u1', email: 'e1', labCode: 'L1', roles: ['ADMIN'], active: true } as any));
+
+    createComponent();
+
+    expect(userService.getUserById).toHaveBeenCalledWith('1');
+    expect(component.form.get('username')?.value).toBe('u1');
+    expect(component.form.get('email')?.value).toBe('e1');
+    expect(component.form.get('labCode')?.value).toBe('L1');
+    expect(component.form.get('roles')?.value).toEqual(['ADMIN']);
+    expect(component.form.get('active')?.value).toBeTrue();
+    expect(component.form.controls['password'].disabled).toBeTrue();
+    expect(component.loading).toBeFalse();
+  });
+
+  it('ngOnInit edit mode should handle getUser error', () => {
+    activatedRouteMock.snapshot.paramMap = convertToParamMap({ id: '2' });
+    userService.getUserById.and.returnValue(throwError(() => ({ status: 404 })));
+    const errSpy = spyOn(console, 'error');
+
+    createComponent();
+
+    expect(errSpy).toHaveBeenCalled();
+    expect(component.loading).toBeFalse();
+  });
+
+  it('submit should create user and navigate on success', () => {
+    createComponent();
+
+    component.form.patchValue({
+      username: 'cuser',
+      email: 'c@e.com',
+      password: 'password123',
+      labCode: 'L1',
+      roles: ['LAB_TECH'],
+      active: true,
+    });
+
+    userService.createUser.and.returnValue(of({} as any));
+
+    component.submit();
+
+    expect(userService.createUser).toHaveBeenCalled();
+    expect(router.navigate).toHaveBeenCalledWith(['/admin/users']);
+    expect(component.loading).toBeFalse();
+  });
+
+  it('submit should log and stop loading on create error', () => {
+    createComponent();
+
+    component.form.patchValue({
+      username: 'cuser',
+      email: 'c@e.com',
+      password: 'password123',
+      labCode: 'L1',
+      roles: ['LAB_TECH'],
+      active: true,
+    });
+
+    userService.createUser.and.returnValue(throwError(() => ({ status: 500 })));
+    const errSpy = spyOn(console, 'error');
+
+    component.submit();
+
+    expect(errSpy).toHaveBeenCalled();
+    expect(component.loading).toBeFalse();
+  });
+
+  it('submit should update user and navigate on success', () => {
+    // prepare edit mode
+    activatedRouteMock.snapshot.paramMap = convertToParamMap({ id: '5' });
+    userService.getUserById.and.returnValue(of({ id: 5, username: 'u5', email: 'e5', labCode: 'L5', roles: ['LAB_TECH'], active: false } as any));
+
+    createComponent();
+
+    component.form.patchValue({
+      email: 'updated@e.com',
+      labCode: 'L5',
+      roles: ['LAB_TECH'],
+      active: true,
+    });
+
+    userService.updateUser.and.returnValue(of({} as any));
+
+    component.submit();
+
+    expect(userService.updateUser).toHaveBeenCalledWith('5', jasmine.any(Object));
+    expect(router.navigate).toHaveBeenCalledWith(['/admin/users']);
+    expect(component.loading).toBeFalse();
+  });
+
+  it('submit should log and stop loading on update error', () => {
+    activatedRouteMock.snapshot.paramMap = convertToParamMap({ id: '6' });
+    userService.getUserById.and.returnValue(of({ id: 6, username: 'u6', email: 'e6', labCode: 'L6' } as any));
+    createComponent();
+
+    component.form.patchValue({
+      email: 'updated@e.com',
+      labCode: 'L6',
+      roles: ['LAB_TECH'],
+      active: true,
+    });
+
+    userService.updateUser.and.returnValue(throwError(() => ({ status: 500 })));
+    const errSpy = spyOn(console, 'error');
+
+    component.submit();
+
+    expect(errSpy).toHaveBeenCalled();
+    expect(component.loading).toBeFalse();
+  });
+
+  it('submit should not call service when form invalid', () => {
+    createComponent();
+    component.form.patchValue({ username: '', email: '', labCode: '' });
+
+    userService.createUser.calls.reset();
+    component.submit();
+
+    expect(userService.createUser).not.toHaveBeenCalled();
+  });
 });

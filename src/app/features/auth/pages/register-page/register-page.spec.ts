@@ -308,5 +308,10 @@ describe('RegisterPage', () => {
       expect(component.errorMessage).toBeNull();
       expect(component.successMessage).not.toBeNull();
     });
+
+    it('goToLogin should navigate to /login', () => {
+      component.goToLogin();
+      expect(router.navigate).toHaveBeenCalledWith(['/login']);
+    });
   });
 });

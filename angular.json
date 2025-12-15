@@ -85,6 +85,14 @@
         "test": {
           "builder": "@angular/build:karma",
           "options": {
+            "codeCoverage": true,
+    "codeCoverageExclude": [
+      "src/main.ts",
+      "src/polyfills.ts",
+      "**/*.spec.ts",
+      "**/*.module.ts",
+      "**/*.routes.ts"
+    ],
             "polyfills": [
               "zone.js",
               "zone.js/testing"
@@ -99,7 +107,10 @@
             ],
             "styles": [
               "src/styles.scss"
-            ]
+            ],
+            "scripts": [],
+            "codeCoverage": true,
+            "karmaConfig": "karma.conf.js"
           }
         }
       }

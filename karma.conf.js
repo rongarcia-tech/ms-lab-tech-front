@@ -9,7 +9,7 @@ module.exports = function(config) {
       require('karma-chrome-launcher'),
       require('karma-jasmine-html-reporter'),
       require('karma-coverage'),
-      require('@angular-devkit/build-angular/plugins/karma')
+      // require('@angular-devkit/build-angular/plugins/karma') old
     ],
     client: {
       jasmine: {
@@ -28,7 +28,8 @@ module.exports = function(config) {
       reporters: [
         { type: 'html', subdir: '.' },
         { type: 'lcov', subdir: 'lcov-report' }
-      ]
+      ],
+      includeAllSources: true,
     },
     reporters: ['progress', 'kjhtml', 'coverage'],
     port: 9876,
