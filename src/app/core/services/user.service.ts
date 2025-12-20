@@ -34,7 +34,31 @@ export class UserService {
   }
 
   createUser(req: CreateUserRequest): Observable<UserResponse> {
-    return this.http.post<UserResponse>(`${API_AUTH_BASE_URL}/users`, req);
+     const normalizeText = (v: unknown): string =>
+    String(v ?? '').trim();
+
+  const normalizeRole = (v: unknown): string =>
+    normalizeText(v).toUpperCase().replace(/^ROLE_/, '');
+
+  const labCodeRaw = normalizeText(req.labCode);
+
+  const body = {
+    username: normalizeText(req.username),
+    email: normalizeText(req.email),
+    password: req.password,
+
+    // null si viene vacío (evita que falle el @Pattern con "")
+    labCode: labCodeRaw ? labCodeRaw.toUpperCase() : null,
+
+    // roles seguros aunque vengan objetos / null / números
+    roles: (Array.isArray(req.roles) ? req.roles : [])
+      .map(normalizeRole)
+      .filter(r => r.length > 0),
+
+    active: !!req.active,
+  };
+    console.log('Creating user with body:', body);
+    return this.http.post<UserResponse>(`${API_AUTH_BASE_URL}/users`, body);
   }
 
   updateUser(id: string, req: UpdateUserRequest): Observable<UserResponse> {

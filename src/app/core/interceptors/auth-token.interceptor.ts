@@ -8,19 +8,20 @@ import {
 import { Observable } from 'rxjs';
 import { API_AUTH_BASE_URL, API_LABS_BASE_URL, API_RESULTS_BASE_URL } from '../config/api.config';
 
-const TOKEN_KEY = 'mslab_token'; // lo vamos a usar en AuthService también
+const TOKEN_KEY = 'mslab_token';
 
 @Injectable()
 export class AuthTokenInterceptor implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const isAuthOrLabsApi =
-      req.url.startsWith(API_AUTH_BASE_URL) || req.url.startsWith(API_LABS_BASE_URL)|| req.url.startsWith(API_RESULTS_BASE_URL);
+    const isApi =
+      req.url.startsWith(API_AUTH_BASE_URL) ||
+      req.url.startsWith(API_LABS_BASE_URL) ||
+      req.url.startsWith(API_RESULTS_BASE_URL);
 
-    // No tocamos requests que no sean a tus MS
-    if (!isAuthOrLabsApi) return next.handle(req);
+    if (!isApi) return next.handle(req);
 
-    // Rutas públicas según tu config Spring Security
+    // públicas (mantengo tu lógica tal cual, no toco swagger/health si ya no te interesa)
     const isPublic =
       req.url === `${API_AUTH_BASE_URL}/auth/login` ||
       req.url === `${API_AUTH_BASE_URL}/.well-known/jwks.json` ||

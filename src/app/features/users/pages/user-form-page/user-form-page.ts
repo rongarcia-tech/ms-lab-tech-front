@@ -1,11 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, of, catchError } from 'rxjs';
+import { Observable, of, catchError, map } from 'rxjs';
+
 import { RoleResponse } from '../../../../shared/models/role.models';
+import { LabResponse } from '../../../../shared/models/labs.models';
 
 import { UserService } from '../../../../core/services/user.service';
 import { RolesService } from '../../../../core/services/roles.service';
+import { LabsService } from '../../../../core/services/lab.service';
+
 import { CreateUserRequest, UpdateUserRequest } from '../../../../shared/models/user-requests.models';
 
 @Component({
@@ -19,31 +23,47 @@ export class UserFormPage implements OnInit {
   isEdit = false;
   loading = false;
 
-  // Ojo: las declaramos, pero NO las inicializamos aquí
+  // streams para selects
   roles$!: Observable<RoleResponse[]>;
-  form!: FormGroup; 
+  labs$!: Observable<LabResponse[]>;
+
+  form!: FormGroup;
 
   constructor(
     private fb: FormBuilder,
     private usersService: UserService,
     private rolesService: RolesService,
+    private labsService: LabsService,
     private route: ActivatedRoute,
     private router: Router,
   ) {
-    // ✅ ya existe rolesService acá
+    // Roles dinámicos
     this.roles$ = this.rolesService.listRoles().pipe(
       catchError(err => {
         console.error('[UserFormPage] roles error', err);
-        return of([] as RoleResponse[]); // fallback
+        return of([] as RoleResponse[]);
       })
     );
 
-    // ✅ ya existe fb acá, así que es seguro construir el form aquí también
+    // Labs dinámicos (solo active=true), se muestran por name pero el value es code
+    this.labs$ = this.labsService.getAllLabs().pipe(
+      map(labs => (labs ?? []).filter(l => l.active === true)),
+      catchError(err => {
+        console.error('[UserFormPage] labs error', err);
+        return of([] as LabResponse[]);
+      })
+    );
+
+    // Form
     this.form = this.fb.group({
       username: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       password: [''],
-      labCode: ['', Validators.required],
+
+      // ✅ ahora es select y viaja un solo code
+      labCode: this.fb.control<string | null>(null, { validators: [Validators.required] }),
+
+      // ✅ multiple
       roles: this.fb.control<string[]>(['LAB_TECH'], { nonNullable: true }),
       active: this.fb.control<boolean>(true, { nonNullable: true }),
     });
@@ -61,12 +81,15 @@ export class UserFormPage implements OnInit {
           this.form.patchValue({
             username: u.username,
             email: u.email,
-            labCode: u.labCode,
-            roles: u.roles ?? ['LAB_TECH'],
+
+            // ✅ si backend manda "" lo convertimos a null
+            labCode: (u.labCode && String(u.labCode).trim()) ? String(u.labCode).trim() : null,
+
+            roles: Array.isArray(u.roles) && u.roles.length ? u.roles : ['LAB_TECH'],
             active: !!u.active
           });
 
-          this.form.controls['password'].disable();; // en edit no se cambia aquí
+          this.form.controls['password'].disable(); // en edit no se cambia aquí
           this.loading = false;
         },
         error: (err) => {
@@ -79,7 +102,6 @@ export class UserFormPage implements OnInit {
       // create: password requerido
       this.form.controls['password'].setValidators([Validators.required, Validators.minLength(8)]);
       this.form.controls['password'].updateValueAndValidity();
-
     }
   }
 
@@ -88,13 +110,27 @@ export class UserFormPage implements OnInit {
 
     this.loading = true;
 
+    const normalizeText = (v: unknown): string => String(v ?? '').trim();
+    const normalizeRole = (v: unknown): string => normalizeText(v).toUpperCase().replace(/^ROLE_/, '');
+    const normalizeLabCode = (v: unknown): string | null => {
+      const x = normalizeText(v);
+      return x ? x.toUpperCase() : null;
+    };
+
+    const username = normalizeText(this.form.value.username);
+    const email = normalizeText(this.form.value.email);
+    const labCode = normalizeLabCode(this.form.value.labCode);
+    const roles = (Array.isArray(this.form.value.roles) ? this.form.value.roles : [])
+      .map(normalizeRole)
+      .filter((r: string) => r.length > 0);
+
     if (!this.isEdit) {
       const req: CreateUserRequest = {
-        username: this.form.value.username!,
-        email: this.form.value.email!,
-        password: this.form.value.password!,
-        labCode: this.form.value.labCode!,
-        roles: this.form.value.roles ?? ['LAB_TECH'],
+        username,
+        email,
+        password: normalizeText(this.form.value.password),
+        labCode: labCode!, // requerido por el form
+        roles: roles.length ? roles : ['LAB_TECH'],
         active: !!this.form.value.active,
       };
 
@@ -113,9 +149,9 @@ export class UserFormPage implements OnInit {
     }
 
     const req: UpdateUserRequest = {
-      email: this.form.value.email!,
-      labCode: this.form.value.labCode!,
-      roles: this.form.value.roles ?? ['LAB_TECH'],
+      email,
+      labCode: labCode!, // requerido por el form
+      roles: roles.length ? roles : ['LAB_TECH'],
       active: !!this.form.value.active,
     };
 

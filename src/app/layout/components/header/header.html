@@ -13,54 +13,93 @@
 
   <span class="spacer"></span>
 
-  <!-- Menú principal en header solo si está logueado -->
+  <!-- Header solo si está logueado -->
   <ng-container *ngIf="loggedIn$ | async">
-    <!-- LABORATORIOS -->
-<button
-  mat-button
-  class="nav-button"
-  [matMenuTriggerFor]="labsMenu"
-  #labsTrigger="matMenuTrigger"
-  (mouseenter)="openMenu(labsTrigger)"
-  (mouseleave)="scheduleClose()"
->
-  Laboratorios
-</button>
+    <ng-container *ngIf="roles$ | async as roles">
 
-<mat-menu #labsMenu="matMenu" yPosition="below">
-  <div (mouseenter)="cancelClose()" (mouseleave)="closeActiveMenu()">
-  <button mat-menu-item routerLink="/labs">Labs</button>
-  <button mat-menu-item routerLink="/orders">Orders</button>
-  <mat-divider></mat-divider>
-  <button mat-menu-item routerLink="/labs/new">Crear Lab</button>
-  <button mat-menu-item routerLink="/orders/new">Crear Orden</button>
-  </div>
-</mat-menu>
+      <!-- LABORATORIOS (ADMIN / LAB_TECH) -->
+      <ng-container *ngIf="canSeeLabs(roles)">
+        <button
+          mat-button
+          class="nav-button"
+          [matMenuTriggerFor]="labsMenu"
+          #labsTrigger="matMenuTrigger"
+          (mouseenter)="openMenu(labsTrigger)"
+          (mouseleave)="scheduleClose()"
+        >
+          Laboratorios
+        </button>
 
-<!-- USUARIOS -->
-<button
-  mat-button
-  class="nav-button"
-  [matMenuTriggerFor]="usersMenu"
-  #usersTrigger="matMenuTrigger"
-  (mouseenter)="openMenu(usersTrigger)"
-  (mouseleave)="scheduleClose()"
->
-  Usuarios
-</button>
+        <mat-menu #labsMenu="matMenu" yPosition="below">
+          <div (mouseenter)="cancelClose()" (mouseleave)="closeActiveMenu()">
+            <!-- lectura (ADMIN / TECH) -->
+            <button mat-menu-item routerLink="/labs">Labs</button>
+            <button mat-menu-item routerLink="/orders">Orders</button>
 
-<mat-menu #usersMenu="matMenu" yPosition="below">
-  <div (mouseenter)="cancelClose()" (mouseleave)="closeActiveMenu()">
-  <button mat-menu-item routerLink="/admin/users">Usuarios</button>
-  <button mat-menu-item routerLink="/admin/roles">Roles</button>
-  </div>
-</mat-menu>
+            <!-- crear (solo ADMIN) -->
+            <ng-container *ngIf="canCreateLabsOrdersResults(roles)">
+              <mat-divider></mat-divider>
+              <button mat-menu-item routerLink="/labs/new">Crear Lab</button>
+              <button mat-menu-item routerLink="/orders/new">Crear Orden</button>
+            </ng-container>
+          </div>
+        </mat-menu>
+      </ng-container>
 
-<button mat-button class="nav-button" routerLink="/profile">Perfil</button>
+      <!-- RESULTADOS (ADMIN / LAB_TECH) -->
+      <ng-container *ngIf="canSeeResults(roles)">
+        <button
+          mat-button
+          class="nav-button"
+          [matMenuTriggerFor]="resultsMenu"
+          #resultsTrigger="matMenuTrigger"
+          (mouseenter)="openMenu(resultsTrigger)"
+          (mouseleave)="scheduleClose()"
+        >
+          Resultados
+        </button>
 
+        <mat-menu #resultsMenu="matMenu" yPosition="below">
+          <div (mouseenter)="cancelClose()" (mouseleave)="closeActiveMenu()">
+            <!-- lectura (ADMIN / TECH) -->
+            <button mat-menu-item routerLink="/results">Listado</button>
 
-    <button mat-button color="warn" (click)="logout()">
-      Salir
-    </button>
+            <!-- crear (solo ADMIN) -->
+            <ng-container *ngIf="canCreateLabsOrdersResults(roles)">
+              <mat-divider></mat-divider>
+              <button mat-menu-item routerLink="/results/new">Ingresar Resultado</button>
+            </ng-container>
+          </div>
+        </mat-menu>
+      </ng-container>
+
+      <!-- USUARIOS (solo ADMIN) -->
+      <ng-container *ngIf="canManageAdmin(roles)">
+        <button
+          mat-button
+          class="nav-button"
+          [matMenuTriggerFor]="usersMenu"
+          #usersTrigger="matMenuTrigger"
+          (mouseenter)="openMenu(usersTrigger)"
+          (mouseleave)="scheduleClose()"
+        >
+          Usuarios
+        </button>
+
+        <mat-menu #usersMenu="matMenu" yPosition="below">
+          <div (mouseenter)="cancelClose()" (mouseleave)="closeActiveMenu()">
+            <button mat-menu-item routerLink="/admin/users">Usuarios</button>
+            <button mat-menu-item routerLink="/admin/roles">Roles</button>
+          </div>
+        </mat-menu>
+      </ng-container>
+
+      <!-- Perfil (cualquier autenticado) -->
+      <button mat-button class="nav-button" routerLink="/profile">Perfil</button>
+
+      <!-- Logout -->
+      <button mat-button color="warn" (click)="logout()">Salir</button>
+
+    </ng-container>
   </ng-container>
 </mat-toolbar>
