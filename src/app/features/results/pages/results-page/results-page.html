@@ -1,0 +1,72 @@
+<div class="results-page">
+  <h1>Resultados</h1>
+
+  <div class="results-list">
+    <ng-container *ngIf="results$ | async as results; else loading">
+      <ng-container *ngIf="results.length > 0; else empty">
+        <mat-card class="result-card" *ngFor="let r of results">
+          <mat-card-header>
+            <mat-card-title>
+              Resultado {{ r.externalId }}
+            </mat-card-title>
+            <mat-card-subtitle>
+              Paciente: {{ r.patientId }} · Orden: {{ r.orderExternalId }}
+            </mat-card-subtitle>
+          </mat-card-header>
+
+          <mat-card-content>
+            <p>
+              <strong>Examen:</strong> {{ r.testName }} <span class="muted">({{ r.testCode }})</span>
+            </p>
+
+            <p>
+              <strong>Valor:</strong>
+              <ng-container *ngIf="r.valueNumber !== null && r.valueNumber !== undefined; else textValue">
+                {{ r.valueNumber }} <span class="muted">{{ r.unit || '' }}</span>
+              </ng-container>
+              <ng-template #textValue>
+                {{ r.valueText || '—' }}
+              </ng-template>
+            </p>
+
+            <p>
+              <strong>Rango ref:</strong> {{ r.referenceRange || '—' }}
+            </p>
+
+            <p>
+              <strong>Flag:</strong> {{ r.flag || '—' }}
+            </p>
+
+            <p>
+              <strong>Actualizado:</strong> {{ r.updatedAt }}
+            </p>
+
+            <mat-chip-set class="status-chip">
+              <mat-chip [color]="getStatusChipColor(r.status)" selected>
+                {{ r.status }}
+              </mat-chip>
+            </mat-chip-set>
+          </mat-card-content>
+
+          <mat-card-actions class="actions">
+            <button mat-stroked-button color="primary" [routerLink]="['/results', r.externalId, 'edit']">
+              Editar
+            </button>
+
+            <button mat-stroked-button color="warn" (click)="deleteResult(r.externalId)">
+              Eliminar
+            </button>
+          </mat-card-actions>
+        </mat-card>
+      </ng-container>
+    </ng-container>
+
+    <ng-template #loading>
+      <p>Cargando resultados...</p>
+    </ng-template>
+
+    <ng-template #empty>
+      <p>No hay resultados registrados.</p>
+    </ng-template>
+  </div>
+</div>

@@ -10,6 +10,7 @@ import { AuthModule } from './features/auth/auth-module';
 import { LabsModule } from './features/labs/labs-module';
 import { OrdersModule } from './features/orders/orders-module';
 import { UsersModule } from './features/users/users-module';
+import { ResultsModule } from './features/results/results.module';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { UsersModule } from './features/users/users-module';
     LabsModule,
     OrdersModule,
     UsersModule,
+    ResultsModule,
   ],
   providers: [
     provideBrowserGlobalErrorListeners()

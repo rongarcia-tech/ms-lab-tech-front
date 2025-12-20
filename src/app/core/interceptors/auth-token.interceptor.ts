@@ -6,7 +6,7 @@ import {
   HttpEvent
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { API_AUTH_BASE_URL, API_LABS_BASE_URL } from '../config/api.config';
+import { API_AUTH_BASE_URL, API_LABS_BASE_URL, API_RESULTS_BASE_URL } from '../config/api.config';
 
 const TOKEN_KEY = 'mslab_token'; // lo vamos a usar en AuthService también
 
@@ -15,7 +15,7 @@ export class AuthTokenInterceptor implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const isAuthOrLabsApi =
-      req.url.startsWith(API_AUTH_BASE_URL) || req.url.startsWith(API_LABS_BASE_URL);
+      req.url.startsWith(API_AUTH_BASE_URL) || req.url.startsWith(API_LABS_BASE_URL)|| req.url.startsWith(API_RESULTS_BASE_URL);
 
     // No tocamos requests que no sean a tus MS
     if (!isAuthOrLabsApi) return next.handle(req);

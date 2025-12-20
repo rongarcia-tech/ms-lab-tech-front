@@ -1,0 +1,35 @@
+.results-page {
+  h1 {
+    margin-bottom: 16px;
+  }
+}
+
+.results-list {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 1fr;
+}
+
+.result-card .muted {
+  opacity: 0.7;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+/* Tablet */
+@media (min-width: 600px) and (max-width: 799px) {
+  .results-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Desktop */
+@media (min-width: 800px) {
+  .results-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

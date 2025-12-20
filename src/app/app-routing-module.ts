@@ -14,6 +14,9 @@ import { UserFormPage } from './features/users/pages/user-form-page/user-form-pa
 import { RolesPage } from './features/users/pages/roles-page/roles-page';
 import { LabFormPage } from './features/labs/pages/lab-form-page/lab-form-page';
 import { OrderFormPage } from './features/orders/pages/order-form-page/order-form-page';
+import { ResultsPage } from './features/results/pages/results-page/results-page';
+import { ResultFormPage } from './features/results/pages/result-form-page/result-form-page';
+
 
 const routes: Routes = [
   { path: '', component: HomePage },
@@ -38,6 +41,10 @@ const routes: Routes = [
       { path: 'labs/:id/edit', component: LabFormPage },
       { path: 'orders/new', component: OrderFormPage },
       { path: 'orders/:id/assign', component: OrderFormPage },
+
+      { path: 'results', component: ResultsPage },
+      { path: 'results/new', component: ResultFormPage },
+      { path: 'results/:id/edit', component: ResultFormPage },
     ]
   },
 
