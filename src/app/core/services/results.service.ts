@@ -16,6 +16,7 @@ export class ResultsService {
       .get<PageResponse<LabResultResponse>>(`${API_RESULTS_BASE_URL}/results`)
       .pipe(map(r => r.content ?? []));
   }
+  
 
   // ADMIN/TECH: filtro opcional (si tu backend soporta query params)
   getResultsByOrder(orderExternalId: string): Observable<LabResultResponse[]> {

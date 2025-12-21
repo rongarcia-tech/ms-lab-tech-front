@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Subject, startWith, switchMap, catchError, of } from 'rxjs';
+import { Subject, startWith, switchMap, catchError, of, tap } from 'rxjs';
 import { ResultsService } from '../../../../core/services/results.service';
 import { LabResultResponse } from '../../../../shared/models/results.models';
 
@@ -12,14 +12,15 @@ import { LabResultResponse } from '../../../../shared/models/results.models';
 export class ResultsPage {
   private reload$ = new Subject<void>();
 
-  results$ = this.reload$.pipe(
-    startWith(void 0),
-    switchMap(() => this.resultsService.getAllResults()),
-    catchError((err) => {
-      console.error('[ResultsPage] load error', err);
-      return of([] as LabResultResponse[]);
-    })
-  );
+results$ = this.reload$.pipe(
+  startWith(void 0),
+  switchMap(() => this.resultsService.getAllResults()),
+  tap((res: any) => console.log('EMITIDO:', res, 'isArray?', Array.isArray(res), 'len', res?.length)),
+  catchError((err) => {
+    console.error('[ResultsPage] load error', err);
+    return of([] as LabResultResponse[]);
+  })
+);
 
   constructor(private resultsService: ResultsService) {}
 

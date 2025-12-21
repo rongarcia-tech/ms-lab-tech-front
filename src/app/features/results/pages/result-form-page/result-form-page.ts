@@ -30,7 +30,8 @@ export class ResultFormPage implements OnInit {
     this.form = this.fb.group({
       orderExternalId: ['', Validators.required],
       patientId: ['', Validators.required],
-      testCode: ['', Validators.required],
+      labCode: ['', Validators.required],
+      requestedTest: ['', Validators.required],
       testName: ['', Validators.required],
 
       valueText: [''],
@@ -53,8 +54,9 @@ export class ResultFormPage implements OnInit {
         next: (r: any) => {
           this.form.patchValue({
             orderExternalId: r.orderExternalId,
+            LabCode: r.labCode,
             patientId: r.patientId,
-            testCode: r.testCode,
+            requestedTest: r.requestedTest,
             testName: r.testName,
             valueText: r.valueText ?? '',
             valueNumber: r.valueNumber ?? null,
@@ -85,7 +87,8 @@ export class ResultFormPage implements OnInit {
       const req: CreateLabResultRequest = {
         orderExternalId: this.form.value.orderExternalId!,
         patientId: this.form.value.patientId!,
-        testCode: this.form.value.testCode!,
+        labCode: this.form.value.labCode!,
+        requestedTest: this.form.value.requestedTest!,
         testName: this.form.value.testName!,
         valueText: this.form.value.valueText?.trim() ? this.form.value.valueText.trim() : null,
         valueNumber: this.form.value.valueNumber ?? null,
@@ -111,7 +114,7 @@ export class ResultFormPage implements OnInit {
 
     const req: UpdateLabResultRequest = {
       testCode: this.form.value.testCode!,
-      testName: this.form.value.testName!,
+      requestedTest: this.form.value.requestedTest!,
       valueText: this.form.value.valueText?.trim() ? this.form.value.valueText.trim() : null,
       valueNumber: this.form.value.valueNumber ?? null,
       unit: this.form.value.unit?.trim() ? this.form.value.unit.trim() : null,

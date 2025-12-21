@@ -4,10 +4,8 @@
   <div class="labs-list">
     <ng-container *ngIf="labs$ | async as labs; else loading">
       <ng-container *ngIf="labs.length > 0; else empty">
-        <mat-card
-          class="lab-card"
-          *ngFor="let lab of labs"
-        >
+
+        <mat-card class="lab-card" *ngFor="let lab of labs">
           <mat-card-header>
             <mat-card-title>{{ lab.name }}</mat-card-title>
             <mat-card-subtitle>{{ lab.code }}</mat-card-subtitle>
@@ -35,18 +33,33 @@
           </mat-card-content>
 
           <mat-card-actions>
-            <button mat-stroked-button color="primary">
-              Ver detalle 
-            </button>
+  <!-- ✅ Botón solo para ADMIN -->
+  <ng-container *ngIf="roles$ | async as roles">
+    <button
+      *ngIf="isAdmin(roles)"
+      mat-stroked-button
+      [color]="lab.active ? 'warn' : 'primary'"
+      (click)="toggleActive(lab)"
+      [disabled]="togglingByLabId[lab.id]"
+    >
+      {{
+        togglingByLabId[lab.id]
+          ? 'Procesando...'
+          : (lab.active ? 'Desactivar' : 'Activar')
+      }}
+    </button>
+  </ng-container>
 
-            <span class="lab-status" [class.inactive]="!lab.active">
-              <mat-icon>
-                {{ lab.active ? 'check_circle' : 'highlight_off' }}
-              </mat-icon>
-              {{ lab.active ? 'Activo' : 'Inactivo' }}
-            </span>
-          </mat-card-actions>
+  <span class="lab-status" [class.inactive]="!lab.active">
+    <mat-icon>
+      {{ lab.active ? 'check_circle' : 'highlight_off' }}
+    </mat-icon>
+    {{ lab.active ? 'Activo' : 'Inactivo' }}
+  </span>
+</mat-card-actions>
+
         </mat-card>
+
       </ng-container>
     </ng-container>
 
@@ -59,4 +72,3 @@
     </ng-template>
   </div>
 </div>
-

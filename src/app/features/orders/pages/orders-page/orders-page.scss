@@ -19,6 +19,38 @@
   color: white;
 }
 
+.assign-lab-box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px 0;
+}
+
+.lab-select {
+  width: 100%;
+  max-width: 420px;
+}
+
+.assign-btn {
+  width: fit-content;
+}
+
+.muted {
+  opacity: 0.7;
+}
+
+.status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.status-action-btn {
+  white-space: nowrap;
+}
+
 /* Tablet */
 @media (min-width: 600px) and (max-width: 799px) {
   .orders-list {

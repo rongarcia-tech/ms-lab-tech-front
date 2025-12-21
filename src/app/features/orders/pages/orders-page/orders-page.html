@@ -3,50 +3,88 @@
 
   <div class="orders-list">
     <ng-container *ngIf="orders$ | async as orders; else loading">
-      <ng-container *ngIf="orders.length > 0; else empty">
-        <mat-card
-          class="order-card"
-          *ngFor="let order of orders"
-        >
-          <mat-card-header>
-            <mat-card-title>
-              Orden {{ order.externalId }}
-            </mat-card-title>
-            <mat-card-subtitle>
-              Paciente: {{ order.patientId }}
-            </mat-card-subtitle>
-          </mat-card-header>
 
-          <mat-card-content>
-            <p>
-              <strong>Examen:</strong> {{ order.requestedTest }}
-            </p>
+      <!-- ✅ una sola suscripción a labs$ -->
+      <ng-container *ngIf="labs$ | async as labs">
 
-            <p>
-              <strong>Laboratorio:</strong>
-              <ng-container *ngIf="order.lab; else noLab">
-                {{ order.lab.name }} ({{ order.lab.code }})
-              </ng-container>
+        <ng-container *ngIf="orders.length > 0; else empty">
+          <mat-card class="order-card" *ngFor="let order of orders">
+            <mat-card-header>
+              <mat-card-title>Orden {{ order.externalId }}</mat-card-title>
+              <mat-card-subtitle>Paciente: {{ order.patientId }}</mat-card-subtitle>
+            </mat-card-header>
+
+            <mat-card-content>
+              <p><strong>Examen:</strong> {{ order.requestedTest }}</p>
+
+              <p>
+                <strong>Laboratorio:</strong>
+                <ng-container *ngIf="order.lab; else noLab">
+                  {{ order.lab.name }} ({{ order.lab.code }})
+                </ng-container>
+              </p>
+
               <ng-template #noLab>
-                No asignado
+                <div class="assign-lab-box">
+                  <div class="muted">No asignado</div>
+
+                  <mat-form-field appearance="outline" class="lab-select">
+                    <mat-label>Seleccionar laboratorio</mat-label>
+
+                    <mat-select
+                      [value]="selectedLabCodeByOrder[order.externalId] || ''"
+                      (selectionChange)="onSelectLab(order.externalId, $event.value)"
+                    >
+                      <mat-option value="" disabled>Seleccione...</mat-option>
+
+                      <!-- ✅ ahora "labs" es array local, no async dentro del ngFor -->
+                      <mat-option *ngFor="let lab of labs" [value]="lab.code">
+                        {{ lab.name }} <span class="muted">({{ lab.code }})</span>
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                  <button
+                    mat-raised-button
+                    color="primary"
+                    class="assign-btn"
+                    [disabled]="!selectedLabCodeByOrder[order.externalId] || assigningByOrder[order.externalId]"
+                    (click)="assignLab(order)"
+                  >
+                    {{ assigningByOrder[order.externalId] ? 'Asignando...' : 'Asignar laboratorio' }}
+                  </button>
+                </div>
               </ng-template>
-            </p>
 
-            <p>
-              <strong>Creada:</strong> {{ order.createdAt }}
-            </p>
+              <p><strong>Creada:</strong> {{ order.createdAt }}</p>
 
-            <p *ngIf="order.assignedAt">
-              <strong>Asignada:</strong> {{ order.assignedAt }}
-            </p>
+              <p *ngIf="order.assignedAt"><strong>Asignada:</strong> {{ order.assignedAt }}</p>
 
-            <mat-chip-set class="status-chip">
-              <mat-chip [color]="getStatusChipColor(order.status)" selected>
-                {{ order.status }}
-              </mat-chip>
-            </mat-chip-set>
-          </mat-card-content>
-        </mat-card>
+              <div class="status-row">
+  <mat-chip-set class="status-chip">
+    <mat-chip [color]="getStatusChipColor(order.status)" selected>
+      {{ order.status }}
+    </mat-chip>
+  </mat-chip-set>
+
+  <!-- Botón solo en ASSIGNED o IN_PROGRESS -->
+  <ng-container *ngIf="getNextAction(order.status) as action">
+    <button
+      mat-stroked-button
+      color="primary"
+      class="status-action-btn"
+      [disabled]="transitioningByOrder[order.externalId]"
+      (click)="transitionOrder(order)"
+    >
+      {{ transitioningByOrder[order.externalId] ? 'Procesando...' : getActionLabel(action) }}
+    </button>
+  </ng-container>
+</div>
+
+            </mat-card-content>
+          </mat-card>
+        </ng-container>
+
       </ng-container>
     </ng-container>
 
@@ -59,4 +97,3 @@
     </ng-template>
   </div>
 </div>
-

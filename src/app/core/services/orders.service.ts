@@ -36,4 +36,25 @@ export class OrdersService {
   finish(orderId: string): Observable<OrderResponse> {
     return this.http.post<OrderResponse>(`${API_LABS_BASE_URL}/orders/${orderId}/finish`, {});
   }
+
+  assignLabToOrder(orderId: string | number, labCode: string) {
+  return this.http.post<void>(
+    `${API_LABS_BASE_URL}/orders/${orderId}/assign`,
+    { labCode }
+  );
+}
+startOrder(orderId: number) {
+  return this.http.post<void>(
+    `${API_LABS_BASE_URL}/orders/${orderId}/start`,
+    {}
+  );
+}
+
+finishOrder(orderId: number) {
+  return this.http.post<void>(
+    `${API_LABS_BASE_URL}/orders/${orderId}/finish`,
+    {}
+  );
+}
+
 }

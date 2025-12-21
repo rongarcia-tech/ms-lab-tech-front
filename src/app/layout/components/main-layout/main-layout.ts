@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { map, shareReplay } from 'rxjs/operators';
+import { BreakpointObserver } from '@angular/cdk/layout';
 
 @Component({
   selector: 'app-main-layout',
@@ -9,7 +8,6 @@ import { map, shareReplay } from 'rxjs/operators';
   styleUrls: ['./main-layout.scss'],
 })
 export class MainLayout {
-
   isMobile = false;
   isTablet = false;
   isDesktop = false;
@@ -17,28 +15,26 @@ export class MainLayout {
   sidenavMode: 'over' | 'side' = 'side';
   sidenavOpened = true;
 
+  private readonly MOBILE = '(max-width: 699px)'; // <= 699
+  private readonly TABLET = '(min-width: 700px) and (max-width: 799px)'; // 700-799
+  private readonly DESKTOP = '(min-width: 800px)'; // >= 800
+
   constructor(private breakpointObserver: BreakpointObserver) {
     this.breakpointObserver
-      .observe([
-        '(max-width: 599px)',                         // mobile
-        '(min-width: 600px) and (max-width: 799px)',  // tablet
-        '(min-width: 800px)',                         // desktop
-      ])
+      .observe([this.MOBILE, this.TABLET, this.DESKTOP])
       .subscribe(result => {
-        const breakpoints = result.breakpoints;
+        const b = result.breakpoints;
 
-        this.isMobile = breakpoints['(max-width: 599px)'];
-        this.isTablet = breakpoints['(min-width: 600px) and (max-width: 799px)'];
-        this.isDesktop = breakpoints['(min-width: 800px)'];
+        this.isMobile = !!b[this.MOBILE];
+        this.isTablet = !!b[this.TABLET];
+        this.isDesktop = !!b[this.DESKTOP];
 
         if (this.isDesktop) {
-          // En desktop: header como navegación principal, sidenav secundario
           this.sidenavMode = 'side';
-          this.sidenavOpened = false;      // o true si quieres un menú lateral fijo
+          this.sidenavOpened = false; // o true si quieres fijo
         } else {
-          // En mobile/tablet: navegación principal en el sidenav
           this.sidenavMode = 'over';
-          this.sidenavOpened = false;      // se abre con el botón de menú
+          this.sidenavOpened = false;
         }
       });
   }

@@ -1,8 +1,8 @@
 export interface CreateLabResultRequest {
   orderExternalId: string;
   patientId: string;
-
-  testCode: string;
+  labCode: string;
+  requestedTest: string;
   testName: string;
 
   valueText?: string | null;
@@ -16,7 +16,7 @@ export interface CreateLabResultRequest {
 
 export interface UpdateLabResultRequest {
   testCode?: string;
-  testName?: string;
+  requestedTest?: string;
 
   valueText?: string | null;
   valueNumber?: number | null;
