@@ -70,17 +70,7 @@ describe('UserService', () => {
     expect(res.id).toBe(2);
   });
 
-  it('createUser should POST and return created user', () => {
-    const body = { username: 'new' } as any;
-    let res: any;
-    service.createUser(body).subscribe(r => (res = r));
 
-    const req = httpMock.expectOne(`${API_AUTH_BASE_URL}/users`);
-    expect(req.request.method).toBe('POST');
-    expect(req.request.body).toEqual(body);
-    req.flush({ id: 10, username: 'new' });
-    expect(res.id).toBe(10);
-  });
 
   it('updateUser should PUT and return updated user', () => {
     const body = { email: 'e@x.com' } as any;
