@@ -7,7 +7,7 @@ describe('AuthService', () => {
   let service: AuthService;
   let httpMock: HttpTestingController;
 
-  const AUTH_BASE = 'http://localhost:8080';
+  const AUTH_BASE = 'https://ip172-18-0-6-d548e8q91nsg00bgpn20-8080.direct.labs.play-with-docker.com';
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -39,16 +39,17 @@ describe('AuthService', () => {
       expect(raw).toBeTruthy();
       const user = JSON.parse(raw as string);
       expect(user.username).toBe('u');
+      expect(service.getRoles()).toEqual(['ADMIN']); // from getMe
       done();
     });
 
     const reqLogin = httpMock.expectOne(`${AUTH_BASE}/auth/login`);
     expect(reqLogin.request.method).toBe('POST');
-    reqLogin.flush({ token: 'tok-123' });
+    reqLogin.flush({ token: 'tok-123', roles: ['ADMIN'] });
 
     const reqMe = httpMock.expectOne(`${AUTH_BASE}/users/me`);
     expect(reqMe.request.method).toBe('GET');
-    reqMe.flush({ id: 1, username: 'u' });
+    reqMe.flush({ id: 1, username: 'u', roles: ['ADMIN'] });
   });
 
   it('login should succeed when getMe fails (still returns true)', done => {
@@ -58,11 +59,12 @@ describe('AuthService', () => {
       expect(res).toBeTrue();
       expect(localStorage.getItem('mslab_token')).toBe('tok-err');
       expect(localStorage.getItem('mslab_current_user')).toBeNull();
+      expect(service.getRoles()).toEqual(['USER']); // from login response
       done();
     });
 
     const reqLogin = httpMock.expectOne(`${AUTH_BASE}/auth/login`);
-    reqLogin.flush({ token: 'tok-err' });
+    reqLogin.flush({ token: 'tok-err', roles: ['USER'] });
 
     const reqMe = httpMock.expectOne(`${AUTH_BASE}/users/me`);
     reqMe.flush({ message: 'oops' }, { status: 500, statusText: 'Server Error' });
@@ -151,5 +153,57 @@ describe('AuthService', () => {
     const inst = new AuthService(http);
     expect(inst.isLoggedIn()).toBeTrue();
     localStorage.removeItem('mslab_token');
+  });
+
+  it('getMe should return user data', done => {
+    service.getMe().subscribe(user => {
+      expect(user.id).toBe(1);
+      expect(user.username).toBe('testuser');
+      done();
+    });
+
+    const req = httpMock.expectOne(`${AUTH_BASE}/users/me`);
+    expect(req.request.method).toBe('GET');
+    req.flush({ id: 1, username: 'testuser' });
+  });
+
+  it('getRoles should return current roles', () => {
+    localStorage.setItem('mslab_roles', JSON.stringify(['ADMIN', 'USER']));
+    // Reload roles
+    const roles = (service as any).loadRolesFromStorage();
+    (service as any).setRoles(roles);
+    expect(service.getRoles()).toEqual(['ADMIN', 'USER']);
+  });
+
+  it('hasRole should return true for matching role', () => {
+    (service as any).setRoles(['ADMIN', 'ROLE_USER']);
+    expect(service.hasRole('ADMIN')).toBeTrue();
+    expect(service.hasRole('ROLE_ADMIN')).toBeTrue(); // normalized
+    expect(service.hasRole('USER')).toBeTrue();
+    expect(service.hasRole('NONEXISTENT')).toBeFalse();
+  });
+
+  it('hasAnyRole should return true if any role matches', () => {
+    (service as any).setRoles(['ADMIN']);
+    expect(service.hasAnyRole('ADMIN', 'USER')).toBeTrue();
+    expect(service.hasAnyRole('USER', 'GUEST')).toBeFalse();
+  });
+
+  it('loadRolesFromStorage should prefer user roles over direct roles', () => {
+    localStorage.setItem('mslab_current_user', JSON.stringify({ roles: ['USER'] }));
+    localStorage.setItem('mslab_roles', JSON.stringify(['ADMIN']));
+    expect((service as any).loadRolesFromStorage()).toEqual(['USER']);
+  });
+
+  it('loadRolesFromStorage should use direct roles if no user', () => {
+    localStorage.removeItem('mslab_current_user');
+    localStorage.setItem('mslab_roles', JSON.stringify(['ADMIN']));
+    expect((service as any).loadRolesFromStorage()).toEqual(['ADMIN']);
+  });
+
+  it('loadRolesFromStorage should return empty array on invalid data', () => {
+    localStorage.removeItem('mslab_current_user');
+    localStorage.setItem('mslab_roles', 'invalid-json');
+    expect((service as any).loadRolesFromStorage()).toEqual([]);
   });
 });

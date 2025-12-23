@@ -70,7 +70,49 @@ describe('UserService', () => {
     expect(res.id).toBe(2);
   });
 
+  it('createUser should normalize and transform the request body', () => {
+    const req = {
+      username: '  user ',
+      email: '  email@test.com  ',
+      password: 'pass',
+      labCode: ' lab123 ',
+      roles: ['role_admin', ' USER ', null, ''],
+      active: true
+    } as any;
+    let res: any;
+    service.createUser(req).subscribe(r => (res = r));
 
+    const reqHttp = httpMock.expectOne(`${API_AUTH_BASE_URL}/users`);
+    expect(reqHttp.request.method).toBe('POST');
+    expect(reqHttp.request.body).toEqual({
+      username: 'user',
+      email: 'email@test.com',
+      password: 'pass',
+      labCode: 'LAB123',
+      roles: ['ADMIN', 'USER'],
+      active: true
+    });
+    reqHttp.flush({ id: 10 });
+    expect(res.id).toBe(10);
+  });
+
+  it('createUser should handle empty labCode and roles', () => {
+    const req = {
+      username: 'user2',
+      email: 'email2@test.com',
+      password: 'pass2',
+      labCode: '',
+      roles: [],
+      active: false
+    } as any;
+    service.createUser(req).subscribe();
+
+    const reqHttp = httpMock.expectOne(`${API_AUTH_BASE_URL}/users`);
+    expect(reqHttp.request.body.labCode).toBeNull();
+    expect(reqHttp.request.body.roles).toEqual([]);
+    expect(reqHttp.request.body.active).toBeFalse();
+    reqHttp.flush({});
+  });
 
   it('updateUser should PUT and return updated user', () => {
     const body = { email: 'e@x.com' } as any;

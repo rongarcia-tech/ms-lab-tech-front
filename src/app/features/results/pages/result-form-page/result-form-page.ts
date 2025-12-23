@@ -54,7 +54,7 @@ export class ResultFormPage implements OnInit {
         next: (r: any) => {
           this.form.patchValue({
             orderExternalId: r.orderExternalId,
-            LabCode: r.labCode,
+            labCode: r.labCode,
             patientId: r.patientId,
             requestedTest: r.requestedTest,
             testName: r.testName,
@@ -113,7 +113,6 @@ export class ResultFormPage implements OnInit {
     }
 
     const req: UpdateLabResultRequest = {
-      testCode: this.form.value.testCode!,
       requestedTest: this.form.value.requestedTest!,
       valueText: this.form.value.valueText?.trim() ? this.form.value.valueText.trim() : null,
       valueNumber: this.form.value.valueNumber ?? null,

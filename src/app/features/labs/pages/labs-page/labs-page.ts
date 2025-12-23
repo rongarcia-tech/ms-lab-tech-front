@@ -27,7 +27,8 @@ export class LabsPage {
       catchError((err) => {
         console.error('[LabsPage] load labs error', err);
         return of([] as LabResponse[]);
-      })
+      }),
+      shareReplay(1)
     );
   }
   

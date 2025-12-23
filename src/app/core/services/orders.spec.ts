@@ -89,4 +89,28 @@ describe('OrdersService', () => {
     req2.flush({});
     expect(finished).toBeTrue();
   });
+
+  it('assignLabToOrder should POST with labCode', () => {
+    service.assignLabToOrder('1', 'lab1').subscribe();
+    const req = httpMock.expectOne(`${API_LABS_BASE_URL}/orders/1/assign`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual({ labCode: 'lab1' });
+    req.flush(null);
+  });
+
+  it('startOrder should POST to start endpoint', () => {
+    service.startOrder(1).subscribe();
+    const req = httpMock.expectOne(`${API_LABS_BASE_URL}/orders/1/start`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual({});
+    req.flush(null);
+  });
+
+  it('finishOrder should POST to finish endpoint', () => {
+    service.finishOrder(2).subscribe();
+    const req = httpMock.expectOne(`${API_LABS_BASE_URL}/orders/2/finish`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual({});
+    req.flush(null);
+  });
 });
